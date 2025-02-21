@@ -1,0 +1,28 @@
+# This workflow will build and release a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Matches version tags like v1.0.0
+
+jobs:
+
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v30
+
+    - name: Build Project
+      run: nix develop --command bash -c "VERSION=${{ github.ref_name }} ./build.sh"
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: ./build/*
+        allowUpdates: true
