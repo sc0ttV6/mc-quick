@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/computerdane/dials"
@@ -63,6 +64,13 @@ func init() {
 		ValueType:    "string",
 		DefaultValue: "https://maven.minecraftforge.net",
 	})
+
+	dials.AddHomeConfigFile(".config/mc-quick/config.json")
+
+	if configFile, exists := os.LookupEnv("CONFIG_FILE"); exists {
+		fmt.Println(configFile)
+		dials.AddConfigFile(configFile)
+	}
 }
 
 func installModrinthModpack(mcVersion string) {
