@@ -12,7 +12,6 @@
       {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-            fabric-installer
             go
             rsync
             temurin-jre-bin

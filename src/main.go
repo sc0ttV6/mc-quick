@@ -71,6 +71,11 @@ func init() {
 		ValueType:    "string",
 		DefaultValue: "https://maven.minecraftforge.net",
 	})
+	gears.Add(&gears.Flag{
+		Name:         "fabric-installer-url",
+		ValueType:    "string",
+		DefaultValue: "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+	})
 
 	gears.AddHomeConfigFile(".config/mc-quick/config.json")
 
@@ -148,7 +153,8 @@ func install() {
 		mcVersionMeta := fetchJson[McVersionMetadata](mcVersionMetaUrl)
 		download("server.jar", mcVersionMeta.Downloads.Server.Url, mcVersionMeta.Downloads.Server.Sha1)
 	case "fabric":
-		run("fabric-installer", "server", "-downloadMinecraft", "-mcversion", mcVersion)
+		download("fabric-installer.jar", gears.StringValue("fabric-installer-url"), "")
+		run("java", "-jar", "fabric-installer.jar", "server", "-downloadMinecraft", "-mcversion", mcVersion)
 
 		installModrinthModpack()
 		installModrinthMods()
