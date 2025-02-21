@@ -15,18 +15,6 @@ import (
 	"github.com/computerdane/gears"
 )
 
-var usage string = `Usage: mc-quick [command]
-
-
-Install: mc-quick install
-Start: mc-quick start
-`
-
-func printUsage() {
-	fmt.Print(usage)
-	os.Exit(1)
-}
-
 func printStep(step string) {
 	fmt.Printf("\n\033[0;32m=> %s...\033[0m\n", step)
 }

@@ -1,0 +1,12 @@
+Usage: mc-quick [command]
+
+Install the required files to run a Minecraft server and start it.
+
+COMMANDS
+mc-quick install
+    Install server files
+
+mc-quick start
+    Start the server
+
+OPTIONS

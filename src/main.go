@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -11,45 +12,67 @@ import (
 
 var Version string
 
+//go:embed USAGE
+var usage string
+
+func printUsage() {
+	fmt.Print(usage)
+	gears.PrintUsage()
+	os.Exit(1)
+}
+
 func init() {
 	gears.Add(&gears.Flag{
-		Name:      "version",
-		ValueType: "bool",
-		Shorthand: "v",
+		Name:        "version",
+		ValueType:   "bool",
+		Shorthand:   "v",
+		Description: "Output the current version.",
+	})
+	gears.Add(&gears.Flag{
+		Name:        "help",
+		ValueType:   "bool",
+		Shorthand:   "h",
+		Description: "Show this help menu.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "mc-version",
 		ValueType:    "string",
 		DefaultValue: "latest",
 		Shorthand:    "V",
+		Description:  "The Minecraft version to use.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "loader",
 		ValueType:    "string",
 		DefaultValue: "vanilla",
 		Shorthand:    "L",
+		Description:  "The mod loader to use; vanilla if no mods desired. Accepted values: vanilla fabric forge.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "forge-version",
 		ValueType:    "string",
 		DefaultValue: "recommended",
+		Description:  "The Forge version to use.",
 	})
 	gears.Add(&gears.Flag{
-		Name:      "overwrite",
-		ValueType: "bool",
-		Shorthand: "O",
+		Name:        "overwrite",
+		ValueType:   "bool",
+		Shorthand:   "O",
+		Description: "If true, will re-download all files regardless of if their checksums are already valid.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "modrinth-modpack",
 		Shorthand:    "M",
 		ValueType:    "string",
 		DefaultValue: "",
+		Description:  "Specify a Modrinth modpack to install.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "modrinth-mod",
 		Shorthand:    "m",
 		ValueType:    "strings",
 		DefaultValue: []string{},
+		Description:  "Specify a Modrinth mod to install. Can be used multiple times to add multiple mods.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "mc-version-manifest-url",
@@ -191,6 +214,10 @@ func main() {
 		}
 		fmt.Printf("mc-quick  %s\n", Version)
 		os.Exit(0)
+	}
+
+	if gears.BoolValue("help") {
+		printUsage()
 	}
 
 	args := gears.Positionals()
