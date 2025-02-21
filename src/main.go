@@ -77,6 +77,10 @@ func installModrinthModpack(mcVersion string) {
 	printStep("Installing Modrinth modpack")
 
 	modpack := dials.StringValue("modrinth-modpack")
+	if modpack == "" {
+		return
+	}
+
 	modpackFile := fetchModrinthProjectPrimaryFile(modpack, mcVersion)
 	if !strings.HasSuffix(modpackFile.Filename, ".mrpack") {
 		log.Fatalf("Modpack %s is not a .mrpack", modpack)
