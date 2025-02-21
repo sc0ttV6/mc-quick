@@ -6,77 +6,77 @@ import (
 	"os"
 	"strings"
 
-	"github.com/computerdane/dials"
+	"github.com/computerdane/gears"
 )
 
 func init() {
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "version",
 		ValueType:    "string",
 		DefaultValue: "latest",
 		Shorthand:    "v",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "loader",
 		ValueType:    "string",
 		DefaultValue: "vanilla",
 		Shorthand:    "l",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "forge-version",
 		ValueType:    "string",
 		DefaultValue: "recommended",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:      "overwrite",
 		ValueType: "bool",
 		Shorthand: "O",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "modrinth-modpack",
 		Shorthand:    "M",
 		ValueType:    "string",
 		DefaultValue: "",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "modrinth-mod",
 		Shorthand:    "m",
 		ValueType:    "strings",
 		DefaultValue: []string{},
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "version-manifest-url",
 		ValueType:    "string",
 		DefaultValue: "https://launchermeta.mojang.com/mc/game/version_manifest.json",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "modrinth-api-url",
 		ValueType:    "string",
 		DefaultValue: "https://api.modrinth.com/v2",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "forge-files-url",
 		ValueType:    "string",
 		DefaultValue: "https://files.minecraftforge.net",
 	})
-	dials.Add(&dials.Dial{
+	gears.Add(&gears.Flag{
 		Name:         "forge-maven-url",
 		ValueType:    "string",
 		DefaultValue: "https://maven.minecraftforge.net",
 	})
 
-	dials.AddHomeConfigFile(".config/mc-quick/config.json")
+	gears.AddHomeConfigFile(".config/mc-quick/config.json")
 
 	if configFile, exists := os.LookupEnv("CONFIG_FILE"); exists {
 		fmt.Println(configFile)
-		dials.AddConfigFile(configFile)
+		gears.AddConfigFile(configFile)
 	}
 }
 
 func installModrinthModpack(mcVersion string) {
 	printStep("Installing Modrinth modpack")
 
-	modpack := dials.StringValue("modrinth-modpack")
+	modpack := gears.StringValue("modrinth-modpack")
 	if modpack == "" {
 		return
 	}
@@ -108,7 +108,7 @@ func installModrinthModpack(mcVersion string) {
 func installModrinthMods(mcVersion string) {
 	printStep("Installing Modrinth mods")
 
-	for _, mod := range dials.StringValues("modrinth-mod") {
+	for _, mod := range gears.StringValues("modrinth-mod") {
 		file := fetchModrinthProjectPrimaryFile(mod, mcVersion)
 		download("mods/"+file.Filename, file.Url, file.Hashes.Sha1)
 	}
@@ -117,9 +117,9 @@ func installModrinthMods(mcVersion string) {
 func install() {
 	printStep("Installing server")
 
-	mcVersionManifest := fetchJson[McVersionManifest](dials.StringValue("version-manifest-url"))
+	mcVersionManifest := fetchJson[McVersionManifest](gears.StringValue("version-manifest-url"))
 
-	mcVersion := dials.StringValue("version")
+	mcVersion := gears.StringValue("version")
 	switch mcVersion {
 	case "latest":
 		mcVersion = mcVersionManifest.Latest.Release
@@ -137,7 +137,7 @@ func install() {
 		log.Fatalf("Could not find Minecraft version %s", mcVersion)
 	}
 
-	switch dials.StringValue("loader") {
+	switch gears.StringValue("loader") {
 	case "vanilla":
 		mcVersionMeta := fetchJson[McVersionMetadata](mcVersionMetaUrl)
 		download("server.jar", mcVersionMeta.Downloads.Server.Url, mcVersionMeta.Downloads.Server.Sha1)
@@ -160,7 +160,7 @@ func install() {
 func start() {
 	printStep("Starting server")
 
-	switch dials.StringValue("loader") {
+	switch gears.StringValue("loader") {
 	case "vanilla":
 		run("java", "-jar", "server.jar", "--nogui")
 	case "fabric":
@@ -171,9 +171,9 @@ func start() {
 }
 
 func main() {
-	dials.Load()
+	gears.Load()
 
-	args := dials.Positionals()
+	args := gears.Positionals()
 	if len(args) == 0 {
 		printUsage()
 	} else if len(args) == 1 {
@@ -187,7 +187,7 @@ func main() {
 		printUsage()
 	}
 
-	loader := dials.StringValue("loader")
+	loader := gears.StringValue("loader")
 	if loader != "vanilla" &&
 		loader != "fabric" &&
 		loader != "forge" {

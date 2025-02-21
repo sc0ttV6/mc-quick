@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/computerdane/dials"
+	"github.com/computerdane/gears"
 )
 
 func modrinthUrlSingleton(s string) string {
@@ -15,9 +15,9 @@ func modrinthUrlSingleton(s string) string {
 func fetchModrinthProjectVersions(slug string, mcVersion string) ModrinthProjectVersions {
 	loc := fmt.Sprintf(
 		`%s/project/%s/version?loaders=%s&game_versions=%s`,
-		dials.StringValue("modrinth-api-url"),
+		gears.StringValue("modrinth-api-url"),
 		slug,
-		modrinthUrlSingleton(dials.StringValue("loader")),
+		modrinthUrlSingleton(gears.StringValue("loader")),
 		modrinthUrlSingleton(mcVersion),
 	)
 	return fetchJson[ModrinthProjectVersions](loc)

@@ -12,7 +12,7 @@ import (
 	"os/exec"
 	"path"
 
-	"github.com/computerdane/dials"
+	"github.com/computerdane/gears"
 )
 
 var usage string = `Usage: mc-quick [command]
@@ -97,7 +97,7 @@ func checkSha1(file string, sha1sum string) bool {
 }
 
 func download(file string, loc string, sha1sum string) {
-	if dials.BoolValue("overwrite") || sha1sum == "" || !checkSha1(file, sha1sum) {
+	if gears.BoolValue("overwrite") || sha1sum == "" || !checkSha1(file, sha1sum) {
 		fmt.Printf("Downloading %s...\n", file)
 
 		res, err := http.Get(loc)
