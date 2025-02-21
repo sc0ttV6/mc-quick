@@ -4,3 +4,5 @@ github.com/computerdane/dials v0.0.0-20250220222409-aeeaacd95a4f h1:9iGyapRbJimA
 github.com/computerdane/dials v0.0.0-20250220222409-aeeaacd95a4f/go.mod h1:TWgjGEN5hazH0BxBCNHi0DNvO9Dswy2pEAJuZS4R1KI=
 github.com/computerdane/dials v0.0.0-20250221004225-365fe588d5eb h1:jPlfjjLiuuuuzDU3WOh4lSJjzBVfbCllntZpq1x9UVs=
 github.com/computerdane/dials v0.0.0-20250221004225-365fe588d5eb/go.mod h1:TWgjGEN5hazH0BxBCNHi0DNvO9Dswy2pEAJuZS4R1KI=
+github.com/computerdane/dials v0.0.0-20250221012543-d23cf981156a h1:diYmNW3buAlvvWxq8RH9+aEZNoslSg+M+NbrywiOGJs=
+github.com/computerdane/dials v0.0.0-20250221012543-d23cf981156a/go.mod h1:TWgjGEN5hazH0BxBCNHi0DNvO9Dswy2pEAJuZS4R1KI=
