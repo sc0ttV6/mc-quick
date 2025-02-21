@@ -9,18 +9,25 @@ import (
 	"github.com/computerdane/gears"
 )
 
+var Version string
+
 func init() {
 	gears.Add(&gears.Flag{
-		Name:         "version",
+		Name:      "version",
+		ValueType: "bool",
+		Shorthand: "v",
+	})
+	gears.Add(&gears.Flag{
+		Name:         "mc-version",
 		ValueType:    "string",
 		DefaultValue: "latest",
-		Shorthand:    "v",
+		Shorthand:    "V",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "loader",
 		ValueType:    "string",
 		DefaultValue: "vanilla",
-		Shorthand:    "l",
+		Shorthand:    "L",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "forge-version",
@@ -45,7 +52,7 @@ func init() {
 		DefaultValue: []string{},
 	})
 	gears.Add(&gears.Flag{
-		Name:         "version-manifest-url",
+		Name:         "mc-version-manifest-url",
 		ValueType:    "string",
 		DefaultValue: "https://launchermeta.mojang.com/mc/game/version_manifest.json",
 	})
@@ -72,7 +79,7 @@ func init() {
 	}
 }
 
-func installModrinthModpack(mcVersion string) {
+func installModrinthModpack() {
 	printStep("Installing Modrinth modpack")
 
 	modpack := gears.StringValue("modrinth-modpack")
@@ -80,7 +87,7 @@ func installModrinthModpack(mcVersion string) {
 		return
 	}
 
-	modpackFile := fetchModrinthProjectPrimaryFile(modpack, mcVersion)
+	modpackFile := fetchModrinthProjectPrimaryFile(modpack)
 	if !strings.HasSuffix(modpackFile.Filename, ".mrpack") {
 		log.Fatalf("Modpack %s is not a .mrpack", modpack)
 	}
@@ -104,11 +111,11 @@ func installModrinthModpack(mcVersion string) {
 	run("rsync", "-aI", "overrides/", ".")
 }
 
-func installModrinthMods(mcVersion string) {
+func installModrinthMods() {
 	printStep("Installing Modrinth mods")
 
 	for _, mod := range gears.StringValues("modrinth-mod") {
-		file := fetchModrinthProjectPrimaryFile(mod, mcVersion)
+		file := fetchModrinthProjectPrimaryFile(mod)
 		download("mods/"+file.Filename, file.Url, file.Hashes.Sha1)
 	}
 }
@@ -116,15 +123,15 @@ func installModrinthMods(mcVersion string) {
 func install() {
 	printStep("Installing server")
 
-	mcVersionManifest := fetchJson[McVersionManifest](gears.StringValue("version-manifest-url"))
+	mcVersionManifest := fetchJson[McVersionManifest](gears.StringValue("mc-version-manifest-url"))
 
-	mcVersion := gears.StringValue("version")
-	switch mcVersion {
+	switch gears.StringValue("mc-version") {
 	case "latest":
-		mcVersion = mcVersionManifest.Latest.Release
+		gears.SetValue("mc-version", mcVersionManifest.Latest.Release)
 	case "latest-snapshot":
-		mcVersion = mcVersionManifest.Latest.Snapshot
+		gears.SetValue("mc-version", mcVersionManifest.Latest.Snapshot)
 	}
+	mcVersion := gears.StringValue("mc-version")
 
 	mcVersionMetaUrl := ""
 	for _, entry := range mcVersionManifest.Versions {
@@ -143,16 +150,16 @@ func install() {
 	case "fabric":
 		run("fabric-installer", "server", "-downloadMinecraft", "-mcversion", mcVersion)
 
-		installModrinthModpack(mcVersion)
-		installModrinthMods(mcVersion)
+		installModrinthModpack()
+		installModrinthMods()
 	case "forge":
-		loc := getForgeDownloadUrl(mcVersion)
+		loc := getForgeDownloadUrl()
 		download("forge-installer.jar", loc, "")
 
 		run("java", "-jar", "forge-installer.jar", "--installServer")
 
-		installModrinthModpack(mcVersion)
-		installModrinthMods(mcVersion)
+		installModrinthModpack()
+		installModrinthMods()
 	}
 }
 
@@ -171,6 +178,14 @@ func start() {
 
 func main() {
 	gears.Load()
+
+	if gears.BoolValue("version") {
+		if Version == "" {
+			Version = "unknown version"
+		}
+		fmt.Printf("mc-quick  %s\n", Version)
+		os.Exit(0)
+	}
 
 	args := gears.Positionals()
 	if len(args) == 0 {

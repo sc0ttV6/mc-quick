@@ -15,10 +15,11 @@ func fetchForgePromotions() ForgePromotions {
 	return fetchJson[ForgePromotions](loc)
 }
 
-func getForgeVersionString(mcVersion string) string {
-	version := gears.StringValue("forge-version")
-	versionString := mcVersion + "-" + version
-	if version == "recommended" || version == "latest" {
+func getForgeVersionString() string {
+	mcVersion := gears.StringValue("mc-version")
+	forgeVersion := gears.StringValue("forge-version")
+	versionString := mcVersion + "-" + forgeVersion
+	if forgeVersion == "recommended" || forgeVersion == "latest" {
 		promos := fetchForgePromotions()
 		value, exists := promos.Promos[versionString]
 		if !exists {
@@ -29,8 +30,8 @@ func getForgeVersionString(mcVersion string) string {
 	return versionString
 }
 
-func getForgeDownloadUrl(mcVersion string) string {
-	versionString := getForgeVersionString(mcVersion)
+func getForgeDownloadUrl() string {
+	versionString := getForgeVersionString()
 	return fmt.Sprintf(
 		"%s/net/minecraftforge/forge/%s/forge-%s-installer.jar",
 		gears.StringValue("forge-maven-url"),
