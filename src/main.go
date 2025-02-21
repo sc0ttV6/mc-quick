@@ -68,7 +68,6 @@ func init() {
 	gears.AddHomeConfigFile(".config/mc-quick/config.json")
 
 	if configFile, exists := os.LookupEnv("CONFIG_FILE"); exists {
-		fmt.Println(configFile)
 		gears.AddConfigFile(configFile)
 	}
 }
