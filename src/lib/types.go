@@ -1,4 +1,4 @@
-package main
+package lib
 
 type McVersionManifest struct {
 	Latest struct {

@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ func modrinthUrlSingleton(s string) string {
 	return url.QueryEscape(fmt.Sprintf(`["%s"]`, s))
 }
 
-func fetchModrinthProjectVersions(slug string) ModrinthProjectVersions {
+func FetchModrinthProjectVersions(slug string) ModrinthProjectVersions {
 	loc := fmt.Sprintf(
 		`%s/project/%s/version?loaders=%s&game_versions=%s`,
 		gears.StringValue("modrinth-api-url"),
@@ -20,11 +20,11 @@ func fetchModrinthProjectVersions(slug string) ModrinthProjectVersions {
 		modrinthUrlSingleton(gears.StringValue("loader")),
 		modrinthUrlSingleton(gears.StringValue("mc-version")),
 	)
-	return fetchJson[ModrinthProjectVersions](loc)
+	return FetchJson[ModrinthProjectVersions](loc)
 }
 
-func fetchModrinthProjectPrimaryFile(slug string) ModrinthProjectVersionsFile {
-	versions := fetchModrinthProjectVersions(slug)
+func FetchModrinthProjectPrimaryFile(slug string) ModrinthProjectVersionsFile {
+	versions := FetchModrinthProjectVersions(slug)
 	if len(versions) == 0 {
 		log.Fatalf("Could not find a valid version on Modrinth for %s for Minecraft %s", slug, gears.StringValue("mc-version"))
 	}

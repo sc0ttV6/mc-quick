@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/computerdane/gears"
+	"github.com/computerdane/mc-quick/lib"
 )
 
 var Version string
@@ -115,7 +116,7 @@ func installModrinthModpack() {
 		return
 	}
 
-	modpackFile := fetchModrinthProjectPrimaryFile(modpack)
+	modpackFile := lib.FetchModrinthProjectPrimaryFile(modpack)
 	if !strings.HasSuffix(modpackFile.Filename, ".mrpack") {
 		log.Fatalf("Modpack %s is not a .mrpack", modpack)
 	}
@@ -124,7 +125,7 @@ func installModrinthModpack() {
 	run("unzip", "-qo", modpackFile.Filename)
 	run("chmod", "-R", "700", "modrinth.index.json", "overrides")
 
-	index := jsonFile[ModrinthModpackIndex]("modrinth.index.json")
+	index := lib.JsonFile[lib.ModrinthModpackIndex]("modrinth.index.json")
 	for _, file := range index.Files {
 		if file.Env.Server == "required" {
 			if len(file.Downloads) == 0 {
@@ -143,7 +144,7 @@ func installModrinthMods() {
 	printStep("Installing Modrinth mods")
 
 	for _, mod := range gears.StringValues("modrinth-mod") {
-		file := fetchModrinthProjectPrimaryFile(mod)
+		file := lib.FetchModrinthProjectPrimaryFile(mod)
 		download("mods/"+file.Filename, file.Url, file.Hashes.Sha1)
 	}
 }
@@ -151,7 +152,7 @@ func installModrinthMods() {
 func install() {
 	printStep("Installing server")
 
-	mcVersionManifest := fetchJson[McVersionManifest](gears.StringValue("mc-version-manifest-url"))
+	mcVersionManifest := lib.FetchJson[lib.McVersionManifest](gears.StringValue("mc-version-manifest-url"))
 
 	switch gears.StringValue("mc-version") {
 	case "latest":
@@ -173,7 +174,7 @@ func install() {
 
 	switch gears.StringValue("loader") {
 	case "vanilla":
-		mcVersionMeta := fetchJson[McVersionMetadata](mcVersionMetaUrl)
+		mcVersionMeta := lib.FetchJson[lib.McVersionMetadata](mcVersionMetaUrl)
 		download("server.jar", mcVersionMeta.Downloads.Server.Url, mcVersionMeta.Downloads.Server.Sha1)
 	case "fabric":
 		download("fabric-installer.jar", gears.StringValue("fabric-installer-url"), "")
@@ -182,7 +183,7 @@ func install() {
 		installModrinthModpack()
 		installModrinthMods()
 	case "forge":
-		loc := getForgeDownloadUrl()
+		loc := lib.GetForgeDownloadUrl()
 		download("forge-installer.jar", loc, "")
 
 		run("java", "-jar", "forge-installer.jar", "--installServer")
