@@ -36,6 +36,11 @@ func init() {
 		Description: "Show this help menu.",
 	})
 	gears.Add(&gears.Flag{
+		Name:        "fish-completions",
+		ValueType:   "bool",
+		Description: "Generate fish completions for this command",
+	})
+	gears.Add(&gears.Flag{
 		Name:         "mc-version",
 		ValueType:    "string",
 		DefaultValue: "latest",
@@ -219,6 +224,11 @@ func main() {
 
 	if gears.BoolValue("help") {
 		printUsage()
+	}
+
+	if gears.BoolValue("fish-completions") {
+		fmt.Println(gears.FishCompletions("mc-quick"))
+		os.Exit(0)
 	}
 
 	args := gears.Positionals()
