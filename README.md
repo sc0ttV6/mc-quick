@@ -56,7 +56,7 @@ services.mc-quick.pixelmon = {
   acceptEula = true;
   openFirewall = true;
   mcVersion = "1.21.1";
-  loader = "forge";
+  loader = "neoforge";
   modrinthModpack = "the-pixelmon-modpack";
   serverProperties = {
     motd = "Pixelmon server";
@@ -90,7 +90,7 @@ services.mc-quick.fabric = {
 | `enable` | `false` | Enable the Minecraft server |
 | `autoStart` | `false` | Start the server on boot |
 | `mcVersion` | `"1.21.4"` | Minecraft version |
-| `loader` | `"vanilla"` | Mod loader: `vanilla`, `fabric`, or `forge` |
+| `loader` | `"vanilla"` | Mod loader: `vanilla`, `fabric`,`neoforge`, or `forge` |
 | `forgeVersion` | `"recommended"` | Forge version |
 | `acceptEula` | `false` | Accept the Minecraft EULA |
 | `port` | `25565` | Server port |
