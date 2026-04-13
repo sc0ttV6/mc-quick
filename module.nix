@@ -220,6 +220,24 @@ in
               '';
             };
 
+            user = lib.mkOption {
+              default = null;
+              type = lib.types.nullOr lib.types.str;
+              description = ''
+                The user to run the Minecraft server as. If null,
+                systemd's DynamicUser is used.
+              '';
+            };
+
+            group = lib.mkOption {
+              default = null;
+              type = lib.types.nullOr lib.types.str;
+              description = ''
+                The group to run the Minecraft server as. If null,
+                systemd's DynamicUser is used.
+              '';
+            };
+
             enableWhitelist = lib.mkEnableOption "whitelisting";
 
             serverProperties = lib.mkOption {
@@ -337,8 +355,12 @@ in
             wantedBy = lib.mkIf cfg.autoStart [ "multi-user.target" ];
 
             serviceConfig = {
-              DynamicUser = true;
+              DynamicUser = (cfg.user == null && cfg.group == null);
               StateDirectory = "mc-quick-${name}";
+            } // lib.optionalAttrs (cfg.user != null) {
+              User = cfg.user;
+            } // lib.optionalAttrs (cfg.group != null) {
+              Group = cfg.group;
             };
 
             path =
