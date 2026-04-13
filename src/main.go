@@ -52,13 +52,19 @@ func init() {
 		ValueType:    "string",
 		DefaultValue: "vanilla",
 		Shorthand:    "L",
-		Description:  "The mod loader to use; vanilla if no mods desired. Accepted values: vanilla fabric forge.",
+		Description:  "The mod loader to use; vanilla if no mods desired. Accepted values: vanilla fabric forge neoforge.",
 	})
 	gears.Add(&gears.Flag{
 		Name:         "forge-version",
 		ValueType:    "string",
 		DefaultValue: "recommended",
 		Description:  "The Forge version to use.",
+	})
+	gears.Add(&gears.Flag{
+		Name:         "neoforge-version",
+		ValueType:    "string",
+		DefaultValue: "latest",
+		Description:  "The NeoForge version to use.",
 	})
 	gears.Add(&gears.Flag{
 		Name:        "overwrite",
@@ -104,6 +110,11 @@ func init() {
 		Name:         "fabric-installer-url",
 		ValueType:    "string",
 		DefaultValue: "https://maven.fabricmc.net/net/fabricmc/fabric-installer/1.0.1/fabric-installer-1.0.1.jar",
+	})
+	gears.Add(&gears.Flag{
+		Name:         "neoforge-maven-url",
+		ValueType:    "string",
+		DefaultValue: "https://maven.neoforged.net",
 	})
 
 	gears.AddHomeConfigFile(".config/mc-quick/config.json")
@@ -195,6 +206,14 @@ func install() {
 
 		installModrinthModpack()
 		installModrinthMods()
+	case "neoforge":
+		loc := lib.GetNeoForgeDownloadUrl()
+		download("neoforge-installer.jar", loc, "")
+
+		run("java", "-jar", "neoforge-installer.jar", "--installServer")
+
+		installModrinthModpack()
+		installModrinthMods()
 	}
 }
 
@@ -207,6 +226,8 @@ func start() {
 	case "fabric":
 		run("java", "-jar", "fabric-server-launch.jar", "--nogui")
 	case "forge":
+		run("./run.sh", "--nogui")
+	case "neoforge":
 		run("./run.sh", "--nogui")
 	}
 }
@@ -248,8 +269,9 @@ func main() {
 	loader := gears.StringValue("loader")
 	if loader != "vanilla" &&
 		loader != "fabric" &&
-		loader != "forge" {
-		log.Fatalf("Loader must be either vanilla, fabric, or forge")
+		loader != "forge" &&
+		loader != "neoforge" {
+		log.Fatalf("Loader must be either vanilla, fabric, forge, or neoforge")
 	}
 
 	switch args[0] {

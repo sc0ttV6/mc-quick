@@ -37,7 +37,7 @@ in
 
             loader = lib.mkOption {
               default = "vanilla";
-              type = lib.types.strMatching "fabric|forge|vanilla";
+              type = lib.types.strMatching "fabric|forge|neoforge|vanilla";
               description = ''
                 Which mod loader to use (`vanilla` if no mod loader desired).
               '';
@@ -48,6 +48,14 @@ in
               type = lib.types.str;
               description = ''
                 Which version of Minecraft Forge to download.
+              '';
+            };
+
+            neoforgeVersion = lib.mkOption {
+              default = "latest";
+              type = lib.types.str;
+              description = ''
+                Which version of NeoForge to download.
               '';
             };
 
@@ -381,6 +389,7 @@ in
                   inherit loader overwrite;
                   mc-version = mcVersion;
                   forge-version = forgeVersion;
+                  neoforge-version = neoforgeVersion;
                   modrinth-modpack = modrinthModpack;
                   modrinth-mod = modrinthMods;
                 }
