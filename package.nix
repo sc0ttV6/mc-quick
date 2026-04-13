@@ -2,7 +2,6 @@
   bash,
   buildGoModule,
   coreutils,
-  fetchFromGitHub,
   installShellFiles,
   lib,
   makeWrapper,
@@ -18,12 +17,7 @@ buildGoModule rec {
   pname = "mc-quick";
   version = "1.0.5";
 
-  src = fetchFromGitHub {
-    owner = "computerdane";
-    repo = "mc-quick";
-    rev = "v${version}";
-    hash = "sha256-JpBJHJSaFYMHVYDmrTpGwROIvVXrPQIZ7pbiIolGUVs=";
-  };
+  src = ./src;
 
   vendorHash = "sha256-xzgNJbuUFL+spUp66CEYz4kreA+UgdV4tyDGVVRlUMc=";
 
