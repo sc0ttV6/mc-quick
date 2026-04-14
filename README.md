@@ -56,8 +56,14 @@ services.mc-quick.pixelmon = {
   acceptEula = true;
   openFirewall = true;
   mcVersion = "1.21.1";
-  loader = "neoforge";
-  modrinthModpack = "the-pixelmon-modpack";
+  loader = {
+    type = "neoforge";
+    version = "21.1.172";
+  };
+  modrinthModpack = {
+    slug = "the-pixelmon-modpack";
+    version = "9.3.14";
+  };
   serverProperties = {
     motd = "Pixelmon server";
   };
@@ -72,7 +78,9 @@ services.mc-quick.fabric = {
   autoStart = true;
   acceptEula = true;
   openFirewall = true;
-  loader = "fabric";
+  loader = {
+    type = "fabric";
+  };
   modrinthMods = [
     "lithium"
     "fabric-api"
@@ -90,13 +98,14 @@ services.mc-quick.fabric = {
 | `enable` | `false` | Enable the Minecraft server |
 | `autoStart` | `false` | Start the server on boot |
 | `mcVersion` | `"1.21.4"` | Minecraft version |
-| `loader` | `"vanilla"` | Mod loader: `vanilla`, `fabric`,`neoforge`, or `forge` |
-| `forgeVersion` | `"recommended"` | Forge version |
+| `loader.type` | `"vanilla"` | Mod loader: `vanilla`, `fabric`, `neoforge`, or `forge` |
+| `loader.version` | `null` | Mod loader version (forge defaults to `"recommended"`, neoforge to `"latest"`) |
 | `acceptEula` | `false` | Accept the Minecraft EULA |
 | `port` | `25565` | Server port |
 | `rconPort` | `25575` | RCON port |
 | `openFirewall` | `false` | Open firewall for the server port |
-| `modrinthModpack` | `""` | Modrinth modpack project slug |
+| `modrinthModpack.slug` | `""` | Modrinth modpack project slug |
+| `modrinthModpack.version` | `null` | Modpack version (defaults to latest) |
 | `modrinthMods` | `[]` | List of Modrinth mod project slugs |
 | `serverProperties` | `{ motd = "Powered by NixOS!"; }` | server.properties values |
 | `ops` | `[]` | Server operators (uuid, name, level, bypassesPlayerLimit) |
