@@ -80,6 +80,12 @@ func init() {
 		Description:  "Specify a Modrinth modpack to install.",
 	})
 	gears.Add(&gears.Flag{
+		Name:         "modrinth-modpack-version",
+		ValueType:    "string",
+		DefaultValue: "",
+		Description:  "Specify a version of the Modrinth modpack to install. Defaults to latest.",
+	})
+	gears.Add(&gears.Flag{
 		Name:         "modrinth-mod",
 		Shorthand:    "m",
 		ValueType:    "strings",
@@ -132,7 +138,7 @@ func installModrinthModpack() {
 		return
 	}
 
-	modpackFile := lib.FetchModrinthProjectPrimaryFile(modpack)
+	modpackFile := lib.FetchModrinthProjectPrimaryFile(modpack, gears.StringValue("modrinth-modpack-version"))
 	if !strings.HasSuffix(modpackFile.Filename, ".mrpack") {
 		log.Fatalf("Modpack %s is not a .mrpack", modpack)
 	}
@@ -160,7 +166,7 @@ func installModrinthMods() {
 	printStep("Installing Modrinth mods")
 
 	for _, mod := range gears.StringValues("modrinth-mod") {
-		file := lib.FetchModrinthProjectPrimaryFile(mod)
+		file := lib.FetchModrinthProjectPrimaryFile(mod, "")
 		download("mods/"+file.Filename, file.Url, file.Hashes.Sha1)
 	}
 }

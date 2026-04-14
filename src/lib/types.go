@@ -30,7 +30,8 @@ type ModrinthProjectVersionsFile struct {
 }
 
 type ModrinthProjectVersions []struct {
-	Files []ModrinthProjectVersionsFile
+	VersionNumber string `json:"version_number"`
+	Files         []ModrinthProjectVersionsFile
 }
 
 type ModrinthModpackIndexFile struct {

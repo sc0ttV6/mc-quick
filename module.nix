@@ -270,10 +270,27 @@ in
             };
 
             modrinthModpack = lib.mkOption {
-              default = "";
-              type = lib.types.str;
+              default = { };
+              type = lib.types.submodule {
+                options = {
+                  slug = lib.mkOption {
+                    default = "";
+                    type = lib.types.str;
+                    description = ''
+                      A Modrinth project id/slug to install as a modpack.
+                    '';
+                  };
+                  version = lib.mkOption {
+                    default = null;
+                    type = lib.types.nullOr lib.types.str;
+                    description = ''
+                      Version of the modpack to install. Defaults to latest.
+                    '';
+                  };
+                };
+              };
               description = ''
-                A Modrinth project id/slug to install as a modpack.
+                Modrinth modpack configuration. Set `slug` and optionally `version`.
               '';
             };
 
@@ -393,7 +410,8 @@ in
                   mc-version = mcVersion;
                   forge-version = if loader.version != null && loader.type == "forge" then loader.version else "recommended";
                   neoforge-version = if loader.version != null && loader.type == "neoforge" then loader.version else "latest";
-                  modrinth-modpack = modrinthModpack;
+                  modrinth-modpack = modrinthModpack.slug;
+                  modrinth-modpack-version = if modrinthModpack.version != null then modrinthModpack.version else "";
                   modrinth-mod = modrinthMods;
                 }
               )

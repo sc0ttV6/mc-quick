@@ -23,13 +23,33 @@ func FetchModrinthProjectVersions(slug string) ModrinthProjectVersions {
 	return FetchJson[ModrinthProjectVersions](loc)
 }
 
-func FetchModrinthProjectPrimaryFile(slug string) ModrinthProjectVersionsFile {
+func FetchModrinthProjectPrimaryFile(slug string, versionNumber string) ModrinthProjectVersionsFile {
 	versions := FetchModrinthProjectVersions(slug)
 	if len(versions) == 0 {
 		log.Fatalf("Could not find a valid version on Modrinth for %s for Minecraft %s", slug, gears.StringValue("mc-version"))
 	}
 
-	version := versions[0]
+	var version struct {
+		VersionNumber string `json:"version_number"`
+		Files         []ModrinthProjectVersionsFile
+	}
+
+	if versionNumber != "" {
+		found := false
+		for _, v := range versions {
+			if v.VersionNumber == versionNumber {
+				version = v
+				found = true
+				break
+			}
+		}
+		if !found {
+			log.Fatalf("Could not find version %s on Modrinth for %s", versionNumber, slug)
+		}
+	} else {
+		version = versions[0]
+	}
+
 	for _, file := range version.Files {
 		if file.Primary {
 			return file
