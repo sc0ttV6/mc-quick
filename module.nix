@@ -36,26 +36,28 @@ in
             };
 
             loader = lib.mkOption {
-              default = "vanilla";
-              type = lib.types.strMatching "fabric|forge|neoforge|vanilla";
+              default = { };
+              type = lib.types.submodule {
+                options = {
+                  type = lib.mkOption {
+                    default = "vanilla";
+                    type = lib.types.strMatching "fabric|forge|neoforge|vanilla";
+                    description = ''
+                      Which mod loader to use (`vanilla` if no mod loader desired).
+                    '';
+                  };
+                  version = lib.mkOption {
+                    default = null;
+                    type = lib.types.nullOr lib.types.str;
+                    description = ''
+                      Version of the mod loader to install. Defaults vary by loader:
+                      forge = "recommended", neoforge = "latest", fabric/vanilla = unused.
+                    '';
+                  };
+                };
+              };
               description = ''
-                Which mod loader to use (`vanilla` if no mod loader desired).
-              '';
-            };
-
-            forgeVersion = lib.mkOption {
-              default = "recommended";
-              type = lib.types.str;
-              description = ''
-                Which version of Minecraft Forge to download.
-              '';
-            };
-
-            neoforgeVersion = lib.mkOption {
-              default = "latest";
-              type = lib.types.str;
-              description = ''
-                Which version of NeoForge to download.
+                Mod loader configuration. Set `type` and optionally `version`.
               '';
             };
 
@@ -386,10 +388,11 @@ in
               builtins.toJSON (
                 with cfg;
                 {
-                  inherit loader overwrite;
+                  loader = loader.type;
+                  inherit overwrite;
                   mc-version = mcVersion;
-                  forge-version = forgeVersion;
-                  neoforge-version = neoforgeVersion;
+                  forge-version = if loader.version != null && loader.type == "forge" then loader.version else "recommended";
+                  neoforge-version = if loader.version != null && loader.type == "neoforge" then loader.version else "latest";
                   modrinth-modpack = modrinthModpack;
                   modrinth-mod = modrinthMods;
                 }
